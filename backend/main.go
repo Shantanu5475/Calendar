@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// Load environment variables (useful for local development)
+	// Load environment variables
 	godotenv.Load()
 
 	// Connect to MongoDB
@@ -31,7 +31,7 @@ func main() {
 	// Create a new Gin router
 	router := gin.Default()
 
-	// Configure CORS (if testing locally with separate origins)
+	// Configure CORS
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
@@ -39,36 +39,31 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Define API routes under the /api prefix
+	// Define API routes under /api
 	routes.HolidayRoutes(router)
 
-	// In production, serve the React app's static assets
+	// Serve static files only in production
 	if os.Getenv("ENV") == "production" {
-		// Serve static assets from /static (the build folder typically has its assets in "build/static")
-		router.Static("/static", "./build/static")
-		// Serve other static files individually if needed (like favicon, manifest, etc.)
-		router.StaticFile("/favicon.ico", "./build/favicon.ico")
-		router.StaticFile("/manifest.json", "./build/manifest.json")
-
-		// Define a NoRoute handler for client-side routing.
-		// This will serve index.html for any route that does NOT start with /api.
+		// Adjust paths to include the "backend" folder, assuming Railway's working directory is the repository root.
+		router.Static("/static", "./backend/build/static")
+		router.StaticFile("/favicon.ico", "./backend/build/favicon.ico")
+		router.StaticFile("/manifest.json", "./backend/build/manifest.json")
 		router.NoRoute(func(c *gin.Context) {
 			if strings.HasPrefix(c.Request.URL.Path, "/api") {
 				c.JSON(http.StatusNotFound, gin.H{"error": "Not Found"})
 				return
 			}
-			c.File("./build/index.html")
+			c.File("./backend/build/index.html")
 		})
 	}
 
-	// Get port from environment variable (Railway will provide this)
+	// Use Railway provided port or default to 8080
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default for local development
+		port = "8080"
 	}
 
 	fmt.Println("🚀 Server running on http://0.0.0.0:" + port)
-	fmt.Println("Starting server...")
 	err := router.Run("0.0.0.0:" + port)
 	if err != nil {
 		fmt.Println("❌ Failed to start server:", err)
