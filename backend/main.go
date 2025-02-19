@@ -50,11 +50,11 @@ func main() {
 	}
 
 	// Print the port before starting the server
-	fmt.Println("🚀 Server running on port:", port)
+	fmt.Println("🚀 Server running on http://0.0.0.0:" + port)
 
 	// Start the server
 	fmt.Println("Starting server...")
-	err := router.Run(":" + port) // Bind to the port provided by Render
+	err := router.Run("0.0.0.0:" + port) // Bind to the port provided by Render
 	if err != nil {
 		fmt.Println("❌ Failed to start server:", err)
 	}
