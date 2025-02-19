@@ -17,7 +17,9 @@ func main() {
 	godotenv.Load()
 
 	// Connect to MongoDB
+	fmt.Println("Connecting to MongoDB...")
 	config.ConnectDB()
+	fmt.Println("MongoDB connected successfully!")
 
 	// Initialize the holiday collection
 	holidayCollection := config.GetCollection("holidays")
@@ -47,7 +49,8 @@ func main() {
 	fmt.Println("🚀 Server running on port:", port)
 
 	// Start the server
-	err := router.Run(":" + port)
+	fmt.Println("Starting server...")
+	err := router.Run("0.0.0.0:" + port)
 	if err != nil {
 		fmt.Println("❌ Failed to start server:", err)
 	}
