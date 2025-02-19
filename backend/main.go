@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"holiday-api/config"
 	"holiday-api/controllers"
 	"holiday-api/routes"
@@ -31,8 +32,10 @@ func main() {
 	// Start the server on port 8080
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "10000" // Default to 10000 if no PORT is set
 	}
+
+	fmt.Println("🚀 Server running on port:", port)
 	router.Run(":" + port)
 
 }
