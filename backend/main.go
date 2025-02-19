@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -44,14 +43,14 @@ func main() {
 	fmt.Println("Gin router created successfully!")
 
 	// Configure CORS
-	fmt.Println("Configuring CORS...")
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type"},
-		AllowCredentials: true,
-	}))
-	fmt.Println("CORS configured successfully!")
+	// fmt.Println("Configuring CORS...")
+	// router.Use(cors.New(cors.Config{
+	// 	AllowOrigins:     []string{"*"},
+	// 	AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
+	// 	AllowHeaders:     []string{"Content-Type"},
+	// 	AllowCredentials: true,
+	// }))
+	// fmt.Println("CORS configured successfully!")
 
 	// Define routes
 	fmt.Println("Defining routes...")
