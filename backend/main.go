@@ -9,17 +9,24 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load environment variables (useful for local development)
+	godotenv.Load()
+
 	// Connect to MongoDB
 	config.ConnectDB()
 
+	// Initialize the holiday collection
 	holidayCollection := config.GetCollection("holidays")
 	controllers.InitHolidayCollection(holidayCollection)
 
+	// Create a new Gin router
 	router := gin.Default()
 
+	// Configure CORS
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
@@ -27,15 +34,21 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+	// Define routes
 	routes.HolidayRoutes(router)
 
-	// Start the server on port 8080
+	// Get port from environment variable (Render provides this)
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "10000" // Default to 10000 if no PORT is set
+		port = "8080" // Default to 8080 for local development
 	}
 
+	// Print the port before starting the server
 	fmt.Println("🚀 Server running on port:", port)
-	router.Run(":" + port)
 
+	// Start the server
+	err := router.Run(":" + port)
+	if err != nil {
+		fmt.Println("❌ Failed to start server:", err)
+	}
 }
