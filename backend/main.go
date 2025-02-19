@@ -18,7 +18,10 @@ func main() {
 
 	// Connect to MongoDB
 	fmt.Println("Connecting to MongoDB...")
-	config.ConnectDB()
+	if err := config.ConnectDB(); err != nil {
+		fmt.Println("❌ Failed to connect to MongoDB:", err)
+		return
+	}
 	fmt.Println("MongoDB connected successfully!")
 
 	// Initialize the holiday collection
@@ -50,7 +53,7 @@ func main() {
 
 	// Start the server
 	fmt.Println("Starting server...")
-	err := router.Run("0.0.0.0:" + port)
+	err := router.Run(":" + port) // Bind to the port provided by Render
 	if err != nil {
 		fmt.Println("❌ Failed to start server:", err)
 	}
