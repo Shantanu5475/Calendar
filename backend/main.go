@@ -5,7 +5,9 @@ import (
 	"holiday-api/config"
 	"holiday-api/controllers"
 	"holiday-api/routes"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -40,12 +42,21 @@ func main() {
 	// Define API routes under the /api prefix
 	routes.HolidayRoutes(router)
 
-	// Serve static files from the "build" folder when in production.
+	// In production, serve the React app's static assets
 	if os.Getenv("ENV") == "production" {
-		// Serve all files from the build folder at the root.
-		router.Static("/", "./build")
-		// For client-side routing (React Router): serve index.html for unmatched routes.
+		// Serve static assets from /static (the build folder typically has its assets in "build/static")
+		router.Static("/static", "./build/static")
+		// Serve other static files individually if needed (like favicon, manifest, etc.)
+		router.StaticFile("/favicon.ico", "./build/favicon.ico")
+		router.StaticFile("/manifest.json", "./build/manifest.json")
+
+		// Define a NoRoute handler for client-side routing.
+		// This will serve index.html for any route that does NOT start with /api.
 		router.NoRoute(func(c *gin.Context) {
+			if strings.HasPrefix(c.Request.URL.Path, "/api") {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Not Found"})
+				return
+			}
 			c.File("./build/index.html")
 		})
 	}
