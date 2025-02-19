@@ -18,24 +18,17 @@ func main() {
 
 	// Connect to MongoDB
 	fmt.Println("Connecting to MongoDB...")
-	if err := config.ConnectDB(); err != nil {
-		fmt.Println("❌ Failed to connect to MongoDB:", err)
-		os.Exit(1) // Exit the program if MongoDB connection fails
-	}
+	config.ConnectDB()
 	fmt.Println("MongoDB connected successfully!")
 
 	// Initialize the holiday collection
 	holidayCollection := config.GetCollection("holidays")
 	controllers.InitHolidayCollection(holidayCollection)
 
-	// if os.Getenv("ENV")=="production"{
-	// 	app.static("/","./cl")
-	// }
-
 	// Create a new Gin router
 	router := gin.Default()
 
-	// Configure CORS
+	// Configure CORS (if testing locally with separate origins)
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
@@ -43,21 +36,27 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Define routes
+	// Define API routes
 	routes.HolidayRoutes(router)
 
-	// Get port from environment variable (Render provides this)
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080" // Default to 8080 for local development
+	// Serve static files from the "build" folder when in production.
+	if os.Getenv("ENV") == "production" {
+		router.Static("/", "./build")
+		// For client-side routing (React Router): serve index.html for unmatched routes.
+		router.NoRoute(func(c *gin.Context) {
+			c.File("./build/index.html")
+		})
 	}
 
-	// Print the port before starting the server
-	fmt.Println("🚀 Server running on http://0.0.0.0:" + port)
+	// Get port from environment variable (Railway will provide this)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // Default for local development
+	}
 
-	// Start the server
+	fmt.Println("🚀 Server running on http://0.0.0.0:" + port)
 	fmt.Println("Starting server...")
-	err := router.Run("0.0.0.0:" + port) // Bind to the port provided by Render
+	err := router.Run("0.0.0.0:" + port)
 	if err != nil {
 		fmt.Println("❌ Failed to start server:", err)
 	}

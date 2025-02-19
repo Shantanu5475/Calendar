@@ -2,29 +2,25 @@ import { useState, useEffect } from "react";
 import { format, addMonths, subMonths, setMonth, setYear } from "date-fns";
 import CalendarGrid from "./CalendarGrid";
 
-// const holidaysMap = {};
-// data.forEach(holiday => {
-//   holidaysMap[holiday.date] = { name: holiday.name, id: holiday._id }; // Use _id instead of id
-// });
-
 const HolidayCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [holidays, setHolidays] = useState({});
-  
+
   const months = [
     "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"
   ];
-  
-  const years = Array.from({ length: 6 }, (_, i) => 2024 + i); // 2024-2029
-  
+
+  const years = Array.from({ length: 6 }, (_, i) => 2024 + i);
+
   useEffect(() => {
     fetchHolidays();
   }, [currentMonth]);
 
   const fetchHolidays = async () => {
     try {
-      const response = await fetch("http://localhost:8080/holidays");
+      // Updated to use relative URL
+      const response = await fetch("/holidays");
       const data = await response.json();
   
       const holidaysMap = {};
@@ -41,7 +37,6 @@ const HolidayCalendar = () => {
       console.error("Error fetching holidays:", error);
     }
   };
-  
 
   const handleMonthChange = (e) => {
     const newMonth = parseInt(e.target.value, 10);
@@ -100,11 +95,11 @@ const HolidayCalendar = () => {
       </div>
 
       <CalendarGrid 
-  currentMonth={currentMonth} 
-  holidays={holidays} 
-  fetchHolidays={fetchHolidays} 
-  setHolidays={setHolidays}  
-/>
+        currentMonth={currentMonth} 
+        holidays={holidays} 
+        fetchHolidays={fetchHolidays} 
+        setHolidays={setHolidays}  
+      />
     </div>
   );
 };
