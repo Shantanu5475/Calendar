@@ -7,11 +7,10 @@ import (
 )
 
 func HolidayRoutes(router *gin.Engine) {
-	// Group the API endpoints under /api to avoid conflicts with the static file serving.
-	api := router.Group("/api")
+	holidayRoutes := router.Group("/holidays")
 	{
-		api.GET("/holidays", controllers.ListHolidays)
-		api.POST("/holidays", controllers.AddHoliday)
-		api.DELETE("/holidays/:id", controllers.DeleteHoliday)
+		holidayRoutes.GET("", controllers.ListHolidays)
+		holidayRoutes.POST("", controllers.AddHoliday)
+		holidayRoutes.DELETE("/:id", controllers.DeleteHoliday)
 	}
 }

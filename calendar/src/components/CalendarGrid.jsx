@@ -17,6 +17,7 @@ const CalendarGrid = ({ currentMonth, holidays, fetchHolidays, setHolidays }) =>
         ))}
       </div>
       
+      
       <div className="grid grid-cols-7 bg-gray-200">
         {days.map((day) => (
           isSameMonth(day, currentMonth) ? (
@@ -25,7 +26,7 @@ const CalendarGrid = ({ currentMonth, holidays, fetchHolidays, setHolidays }) =>
               day={day} 
               holidays={holidays} 
               fetchHolidays={fetchHolidays} 
-              setHolidays={setHolidays}  
+              setHolidays={setHolidays}  //Pass setHolidays 
             />
           ) : (
             <div key={format(day, "yyyy-MM-dd")} className="p-4 border text-center bg-gray-300 rounded-lg"></div>
