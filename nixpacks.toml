@@ -1,0 +1,4 @@
+[build]
+root = "backend"
+build_command = "go build -o app ."
+run_command = "./app"
