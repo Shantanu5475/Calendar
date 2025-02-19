@@ -14,7 +14,7 @@ const DateCell = ({ day, holidays, fetchHolidays, setHolidays }) => {
 
     try {
       console.log("Sending request to backend...");
-      const response = await fetch("http://localhost:8080/holidays", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/holidays`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date: formattedDate, name, country }),
@@ -42,7 +42,7 @@ const DateCell = ({ day, holidays, fetchHolidays, setHolidays }) => {
 
     try {
       console.log(`Deleting holiday with ID: ${holiday.id}`);
-      const response = await fetch(`http://localhost:8080/holidays/${holiday.id}`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/holidays/${holiday.id}`, {
         method: "DELETE",
       });
 
@@ -52,7 +52,6 @@ const DateCell = ({ day, holidays, fetchHolidays, setHolidays }) => {
 
       console.log("Holiday removed successfully.");
 
-      
       setHolidays(prevHolidays => {
         const updatedHolidays = { ...prevHolidays };
         delete updatedHolidays[formattedDate]; 
@@ -82,7 +81,6 @@ const DateCell = ({ day, holidays, fetchHolidays, setHolidays }) => {
         </button>
       )}
 
-      
       {holiday && (
         <div className="mt-2 text-sm text-red-500 font-medium flex items-center justify-center gap-2">
           {holiday.name}

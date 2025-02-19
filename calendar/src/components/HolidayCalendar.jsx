@@ -2,11 +2,6 @@ import { useState, useEffect } from "react";
 import { format, addMonths, subMonths, setMonth, setYear } from "date-fns";
 import CalendarGrid from "./CalendarGrid";
 
-// const holidaysMap = {};
-// data.forEach(holiday => {
-//   holidaysMap[holiday.date] = { name: holiday.name, id: holiday._id }; // Use _id instead of id
-// });
-
 const HolidayCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [holidays, setHolidays] = useState({});
@@ -24,7 +19,11 @@ const HolidayCalendar = () => {
 
   const fetchHolidays = async () => {
     try {
-      const response = await fetch("http://localhost:8080/holidays");
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/holidays`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const data = await response.json();
   
       const holidaysMap = {};
@@ -41,7 +40,6 @@ const HolidayCalendar = () => {
       console.error("Error fetching holidays:", error);
     }
   };
-  
 
   const handleMonthChange = (e) => {
     const newMonth = parseInt(e.target.value, 10);
@@ -100,11 +98,11 @@ const HolidayCalendar = () => {
       </div>
 
       <CalendarGrid 
-  currentMonth={currentMonth} 
-  holidays={holidays} 
-  fetchHolidays={fetchHolidays} 
-  setHolidays={setHolidays}  
-/>
+        currentMonth={currentMonth} 
+        holidays={holidays} 
+        fetchHolidays={fetchHolidays} 
+        setHolidays={setHolidays}  
+      />
     </div>
   );
 };
