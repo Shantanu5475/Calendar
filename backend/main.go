@@ -19,6 +19,7 @@ func main() {
 	// Connect to MongoDB
 	fmt.Println("Connecting to MongoDB...")
 	config.ConnectDB()
+	fmt.Println("🚀 Connected to MongoDB successfully!")
 	fmt.Println("MongoDB connected successfully!")
 
 	// Initialize the holiday collection
@@ -36,11 +37,12 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Define API routes
+	// Define API routes under the /api prefix
 	routes.HolidayRoutes(router)
 
 	// Serve static files from the "build" folder when in production.
 	if os.Getenv("ENV") == "production" {
+		// Serve all files from the build folder at the root.
 		router.Static("/", "./build")
 		// For client-side routing (React Router): serve index.html for unmatched routes.
 		router.NoRoute(func(c *gin.Context) {

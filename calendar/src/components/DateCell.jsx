@@ -14,8 +14,8 @@ const DateCell = ({ day, holidays, fetchHolidays, setHolidays }) => {
 
     try {
       console.log("Sending request to backend...");
-      // Updated to use relative URL
-      const response = await fetch("/holidays", {
+      // Updated to use the /api prefix.
+      const response = await fetch("/api/holidays", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ date: formattedDate, name, country }),
@@ -43,8 +43,8 @@ const DateCell = ({ day, holidays, fetchHolidays, setHolidays }) => {
 
     try {
       console.log(`Deleting holiday with ID: ${holiday.id}`);
-      // Updated to use relative URL
-      const response = await fetch(`/holidays/${holiday.id}`, {
+      // Updated to use the /api prefix.
+      const response = await fetch(`/api/holidays/${holiday.id}`, {
         method: "DELETE",
       });
 

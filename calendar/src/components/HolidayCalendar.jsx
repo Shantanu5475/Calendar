@@ -19,8 +19,8 @@ const HolidayCalendar = () => {
 
   const fetchHolidays = async () => {
     try {
-      // Updated to use relative URL
-      const response = await fetch("/holidays");
+      // Updated to use the /api prefix.
+      const response = await fetch("/api/holidays");
       const data = await response.json();
   
       const holidaysMap = {};
