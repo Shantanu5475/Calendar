@@ -17,10 +17,11 @@ func main() {
 	godotenv.Load()
 
 	// Connect to MongoDB
+	// Connect to MongoDB
 	fmt.Println("Connecting to MongoDB...")
 	if err := config.ConnectDB(); err != nil {
 		fmt.Println("❌ Failed to connect to MongoDB:", err)
-		return
+		os.Exit(1) // Exit the program if MongoDB connection fails
 	}
 	fmt.Println("MongoDB connected successfully!")
 

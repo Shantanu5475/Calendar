@@ -14,16 +14,15 @@ import (
 
 var client *mongo.Client
 
-func ConnectDB() {
-
+func ConnectDB() error {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return fmt.Errorf("error loading .env file: %w", err)
 	}
 
 	mongoURI := os.Getenv("MONGO_URI")
 	if mongoURI == "" {
-		log.Fatal("MONGO_URI is not set in .env file")
+		return fmt.Errorf("MONGO_URI is not set in .env file")
 	}
 
 	clientOptions := options.Client().ApplyURI(mongoURI)
@@ -33,15 +32,16 @@ func ConnectDB() {
 	var connErr error
 	client, connErr = mongo.Connect(ctx, clientOptions)
 	if connErr != nil {
-		log.Fatalf("Failed to connect to MongoDB: %v", connErr)
+		return fmt.Errorf("failed to connect to MongoDB: %w", connErr)
 	}
 
 	pingErr := client.Ping(ctx, nil)
 	if pingErr != nil {
-		log.Fatalf("MongoDB ping failed: %v", pingErr)
+		return fmt.Errorf("MongoDB ping failed: %w", pingErr)
 	}
 
 	fmt.Println("🚀 Connected to MongoDB successfully!")
+	return nil
 }
 
 func GetCollection(collectionName string) *mongo.Collection {
