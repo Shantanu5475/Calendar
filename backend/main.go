@@ -5,6 +5,7 @@ import (
 	"holiday-api/config"
 	"holiday-api/controllers"
 	"holiday-api/routes"
+	"log"
 	"os"
 
 	"github.com/gin-contrib/cors"
@@ -13,15 +14,13 @@ import (
 )
 
 func main() {
-	// Load environment variables (useful for local development)
+	// Load environment variables
 	godotenv.Load()
 
 	// Connect to MongoDB
-	fmt.Println("Connecting to MongoDB...")
 	config.ConnectDB()
-	fmt.Println("MongoDB connected successfully!")
 
-	// Initialize the holiday collection
+	// Initialize holiday collection
 	holidayCollection := config.GetCollection("holidays")
 	controllers.InitHolidayCollection(holidayCollection)
 
@@ -36,22 +35,27 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Define routes
+	// ✅ Add a root route to prevent 404 errors
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Welcome to the Holiday API!",
+		})
+	})
+
+	// Define holiday routes
 	routes.HolidayRoutes(router)
 
-	// Get port from environment variable (Render provides this)
+	// Get port from environment variable
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default to 8080 for local development
+		port = "8080"
 	}
 
-	// Print the port before starting the server
 	fmt.Println("🚀 Server running on port:", port)
 
 	// Start the server
-	fmt.Println("Starting server...")
-	err := router.Run("0.0.0.0:" + port)
+	err := router.Run(":" + port)
 	if err != nil {
-		fmt.Println("❌ Failed to start server:", err)
+		log.Fatalf("❌ Failed to start server: %v", err)
 	}
 }
